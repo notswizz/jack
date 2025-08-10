@@ -145,6 +145,14 @@
 .quickButton:active { transform: translateY(1px); }
 @media (prefers-color-scheme: dark) { .quickButton { background: rgba(17,24,39,0.55); color: #e5e7eb; } }
 
+/* Keep the container in flow to reserve height, but visually hide content */
+.quickActionsHidden {
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+  min-height: 34px; /* approximate one row height to preserve layout */
+}
+
 /* Chat messages area */
 .chatMessages {
   border: 1px solid rgba(99,102,241,0.25);

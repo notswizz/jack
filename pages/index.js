@@ -190,8 +190,7 @@ export default function Home() {
           <section className={styles.centerCol}>
             <div className={`${styles.card} ${styles.chat}` }>
               <h2 className={styles.sectionTitle}>AI Jack Bot</h2>
-              {!hasUserMessage && !loading && (
-                <div className={styles.quickActions}>
+              <div className={`${styles.quickActions} ${hasUserMessage || loading || typing ? styles.quickActionsHidden : ""}`}>
                   <button
                     type="button"
                     className={styles.quickButton}
@@ -219,8 +218,7 @@ export default function Home() {
                   >
                     Tell me about Jack
                   </button>
-                </div>
-              )}
+              </div>
               <div ref={chatRef} className={styles.chatMessages}>
                 {messages.map((m, i) => (
                   <div key={i} className={m.role === "user" ? styles.userMsg : styles.assistantMsg}>
