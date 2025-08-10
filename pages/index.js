@@ -221,32 +221,32 @@ export default function Home() {
 
           <section className={styles.rightCol}>
             <div className={styles.cardRow}>
-              {projects?.length > 0 && (
+            {projects?.length > 0 && (
                 <div className={`${styles.card} ${styles.compact}`}>
-                  <h2 className={styles.sectionTitle}>Projects</h2>
-                  {projects.map((p) => (
-                    <div key={p.name} className={styles.entryCompact}>
+                <h2 className={styles.sectionTitle}>Projects</h2>
+                {projects.map((p) => (
+                  <div key={p.name} className={styles.entryCompact}>
                       <h3 className={`${styles.entryTitle} ${styles.singleLine}`}>
-                        {p.link ? (
-                          <a href={p.link} target="_blank" rel="noreferrer">{p.name}</a>
-                        ) : (
-                          p.name
-                        )}
-                      </h3>
-                      {p.description && (
-                        <div className={styles.entryMeta}>{p.description}</div>
+                      {p.link ? (
+                        <a href={p.link} target="_blank" rel="noreferrer">{p.name}</a>
+                      ) : (
+                        p.name
                       )}
-                    </div>
-                  ))}
-                </div>
-              )}
+                    </h3>
+                    {p.description && (
+                      <div className={styles.entryMeta}>{p.description}</div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
 
-              {internships?.length > 0 && (
+            {internships?.length > 0 && (
                 <div className={`${styles.card} ${styles.compact}`}>
-                  <h2 className={styles.sectionTitle}>Internships</h2>
-                  {internships.map((it) => (
-                    <div key={it.company} className={styles.entryCompact}>
-                      <h3 className={styles.entryTitle}>
+                <h2 className={styles.sectionTitle}>Internships</h2>
+                {internships.map((it) => (
+                  <div key={it.company} className={styles.entryCompact}>
+                    <h3 className={styles.entryTitle}>
                         {it.role ? (
                           <>
                             {it.role}
@@ -254,20 +254,20 @@ export default function Home() {
                           </>
                         ) : null}
                         {it.link ? (
-                          <a href={it.link} target="_blank" rel="noreferrer">{it.company}</a>
-                        ) : (
-                          it.company
-                        )}
-                      </h3>
-                      <div className={styles.entryMeta}>
-                        <span>{it.location}</span>
-                        <span>·</span>
-                        <span>{it.start}</span>
-                      </div>
+                        <a href={it.link} target="_blank" rel="noreferrer">{it.company}</a>
+                      ) : (
+                        it.company
+                      )}
+                    </h3>
+                    <div className={styles.entryMeta}>
+                      <span>{it.location}</span>
+                      <span>·</span>
+                      <span>{it.start}</span>
                     </div>
-                  ))}
-                </div>
-              )}
+                  </div>
+                ))}
+              </div>
+            )}
 
               {education?.length > 0 && (
                 <div className={`${styles.card} ${styles.compact}`}>
