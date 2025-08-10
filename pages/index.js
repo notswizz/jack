@@ -15,6 +15,7 @@ export default function Home() {
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [typing, setTyping] = useState(false);
   const chatRef = useRef(null);
   const hasUserMessage = messages.some((m) => m.role === "user");
 
@@ -22,11 +23,11 @@ export default function Home() {
     if (chatRef.current) {
       chatRef.current.scrollTop = chatRef.current.scrollHeight;
     }
-  }, [messages, loading]);
+  }, [messages, loading, typing]);
 
   async function sendMessage(e) {
     e.preventDefault();
-    if (!input.trim() || loading) return;
+    if (!input.trim() || loading || typing) return;
     const nextMessages = [...messages, { role: "user", content: input.trim() }];
     setMessages(nextMessages);
     setInput("");
@@ -39,25 +40,28 @@ export default function Home() {
       });
       const data = await res.json();
       if (data?.content) {
-        setMessages((m) => [...m, { role: "assistant", content: data.content }]);
+        setLoading(false);
+        await typeOutAssistant(data.content);
       } else if (data?.error) {
+        setLoading(false);
         setMessages((m) => [
           ...m,
           { role: "assistant", content: `Sorry, error: ${data.error}` }
         ]);
+      } else {
+        setLoading(false);
       }
     } catch (err) {
+      setLoading(false);
       setMessages((m) => [
         ...m,
         { role: "assistant", content: `Sorry, something went wrong.` }
       ]);
-    } finally {
-      setLoading(false);
     }
   }
 
   async function sendQuick(text) {
-    if (!text?.trim() || loading) return;
+    if (!text?.trim() || loading || typing) return;
     const nextMessages = [...messages, { role: "user", content: text.trim() }];
     setMessages(nextMessages);
     setLoading(true);
@@ -69,21 +73,45 @@ export default function Home() {
       });
       const data = await res.json();
       if (data?.content) {
-        setMessages((m) => [...m, { role: "assistant", content: data.content }]);
+        setLoading(false);
+        await typeOutAssistant(data.content);
       } else if (data?.error) {
+        setLoading(false);
         setMessages((m) => [
           ...m,
           { role: "assistant", content: `Sorry, error: ${data.error}` }
         ]);
+      } else {
+        setLoading(false);
       }
     } catch (err) {
+      setLoading(false);
       setMessages((m) => [
         ...m,
         { role: "assistant", content: `Sorry, something went wrong.` }
       ]);
-    } finally {
-      setLoading(false);
     }
+  }
+
+  function wait(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+  async function typeOutAssistant(fullText) {
+    setTyping(true);
+    setMessages((prev) => [...prev, { role: "assistant", content: "" }]);
+    const tokens = Array.from(fullText);
+    for (let i = 1; i <= tokens.length; i++) {
+      await wait(12);
+      const slice = tokens.slice(0, i).join("");
+      setMessages((prev) => {
+        const copy = [...prev];
+        const lastIndex = copy.length - 1;
+        copy[lastIndex] = { ...copy[lastIndex], content: slice };
+        return copy;
+      });
+    }
+    setTyping(false);
   }
 
   return (
@@ -197,13 +225,18 @@ export default function Home() {
                 {messages.map((m, i) => (
                   <div key={i} className={m.role === "user" ? styles.userMsg : styles.assistantMsg}>
                     {m.role === "assistant" ? (
-                      <ReactMarkdown>{m.content}</ReactMarkdown>
+                      <div className={styles.assistantContent}>
+                        <ReactMarkdown>{m.content}</ReactMarkdown>
+                        {typing && i === messages.length - 1 ? (
+                          <span className={styles.typingCaret} />
+                        ) : null}
+                      </div>
                     ) : (
                       m.content
                     )}
                   </div>
                 ))}
-                {loading && <div className={styles.assistantMsg}>Thinking…</div>}
+                {loading && !typing && <div className={styles.assistantMsg}>Thinking…</div>}
               </div>
               <form onSubmit={sendMessage} className={styles.chatInputRow}>
                 <input
@@ -212,7 +245,7 @@ export default function Home() {
                   onChange={(e) => setInput(e.target.value)}
                   placeholder="Ask about roles, projects, impact…"
                 />
-                <button className={styles.chatSend} disabled={loading || !input.trim()}>
+                <button className={styles.chatSend} disabled={loading || typing || !input.trim()}>
                   Send
                 </button>
               </form>
