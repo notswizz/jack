@@ -1,7 +1,7 @@
 export const resume = {
   personal: {
     name: "Jack Smith",
-    title: "Swiss Army Knife",
+    title: "",
     location: "Atlanta, GA",
     email: "7jackdsmith@gmail.com",
     phone: "404-536-7803",
